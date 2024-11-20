@@ -13,14 +13,15 @@ import (
 func main() {
 	dontKillMeOrIKillYou()
 
-	var notifyTime time.Duration = 1
+	var notifyTime int = 30
 	fmt.Printf("Notifying every %d minutes.\n", notifyTime)
 	fmt.Println("Taking care of your kidneys...")
 
-	ticker := time.NewTicker(notifyTime * time.Minute)
+	var tickerTime time.Duration = 1
+	ticker := time.NewTicker(tickerTime * time.Minute)
 	drinkWaterMyFriend()
 	for range ticker.C {
-		if !inTimeRange() {
+		if !inTimeRange(notifyTime) {
 			continue
 		}
 
@@ -39,14 +40,14 @@ func dontKillMeOrIKillYou() {
 	}()
 }
 
-func inTimeRange() bool {
+func inTimeRange(notifyTime int) bool {
 	newLayout := "15:04"
 	start, _ := time.Parse(newLayout, "08:00")
 	end, _ := time.Parse(newLayout, "19:00")
 
 	actualHour := time.Now().Format(newLayout)
 	now, _ := time.Parse(newLayout, actualHour)
-	if now.Minute() == 0 || now.Minute() == 30 {
+	if now.Minute()%notifyTime == 0 {
 		return start.Before(now) && end.After(now)
 	}
 
